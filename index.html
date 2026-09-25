@@ -1,51 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My Genesys Cloud Web Messaging Site</title>
-</head>
-<body>
-
-<h1>Welcome to Our Support Page</h1>
-<p>Click the chat icon in the corner to start a conversation.</p>
-
-<!-- Genesys Cloud Web Messaging Script -->
-<script type="text/javascript" charset="utf-8">
-  (function (g, e, n, es, ys) {
-    g['_genesysJs'] = e;
-    g[e] = g[e] || function () {
-      (g[e].q = g[e].q || []).push(arguments)
-    };
-    g[e].t = 1 * new Date();
-    g[e].c = es;
-    ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
-  })(window, 'Genesys', 'https://apps.mypurecloud.de/genesys-bootstrap/genesys.min.js', {
-    environment: 'prod-euc1',
-    deploymentId: '3f156bd4-3a95-4ccf-a559-5d879658f7a8'  //'32cf86d8-890a-4ef1-a280-0603e4d0a7e6'
-  });
-
-  Genesys("subscribe", "Database.ready", function() {
-    console.log("Database plugin is ready")
-  });
-
-  Genesys("command","Database.set", {
-    messaging: {
-        customAttributes: {
-            email_address: "jyoti.sharma@computacenter.com",
-            customer_name: "Jyoti",
-            webUserEmail: "jyoti.sharma@computacenter.com",
-            locale: "en-gb",
-            language: "en-gb"
-        }
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>My Genesys Cloud Web Messaging Site</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 60px auto;
+        padding: 20px;
     }
+
+    h1 {
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold;
+    }
+
+    input,
+    select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        padding: 12px 24px;
+        font-size: 16px;
+        color: white;
+        background-color: #0066cc;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0052a3;
+    }
+
+    #status {
+        margin-top: 15px;
+        color: #555;
+    }
+</style>
+
+</head> <body> <h1>Welcome to Our Support Page</h1> <p>Please enter your details before starting a conversation.</p>
+     <div class="form-group"> 
+    <label for="email">Email address</label> 
+    <input type="email" id="email" placeholder="you@example.com" required > </div> 
     
-  });
+    <div class="form-group"> <label for="locale">Language</label> 
+        <select id="locale"> 
+        <option value="en-gb">English (UK)</option>
+        <option value="en-us">English (US)</option>
+        <option value="fr-fr">French</option>
+        <option value="de-de">German</option>
+        <option value="es-es">Spanish</option> 
+    </select> </div>
 
- console.log("ABCD")
+<button id="startChat">Start Chat</button>
 
-
-</script>
-
-
-</body>
-</html>
+<div id="status"></div> <!-- Genesys Cloud Web Messaging Script -->
+ <script type="text/javascript" charset="utf-8"> 
+ (function (g, e, n, es, ys) { 
+    g['_genesysJs'] = e; 
+    g[e] = g[e] || function () { 
+        (g[e].q = g[e].q || []).push(arguments)
+         }; 
+        g[e].t = 1 * new Date(); 
+        g[e].c = es; ys = document.createElement('script'); 
+        ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys); 
+        })
+        (window, 'Genesys', 'https://apps.mypurecloud.de/genesys-bootstrap/genesys.min.js', { environment: 'prod-euc1', deploymentId: '3f156bd4-3a95-4ccf-a559-5d879658f7a8' } ); 
+        // Wait until the Genesys Database plugin is ready 
+        Genesys("subscribe", "Database.ready", function () { console.log("Database plugin is ready"); 
+        
+        document.getElementById("status").innerText = "Chat is ready."; }); 
+        // Start chat button 
+        document.getElementById("startChat").addEventListener("click", function () { const email = document.getElementById("email").value.trim(); const locale = document.getElementById("locale").value; 
+        // Validate email 
+        if (!email) 
+        { alert("Please enter your email address."); return; } 
+        // Basic email validation 
+        if (!email.includes("@")) { alert("Please enter a valid email address."); return; } 
+        console.log("Email:", email); console.log("Locale:", locale); 
+        // Pass the values to Genesys 
+        Genesys("command", "Database.set", { 
+            messaging: { customAttributes: { email_address: email, customer_name: email, webUserEmail: email, locale: locale, language: locale } } 
+        }); 
+        console.log("Customer information sent to Genesys"); 
+        document.getElementById("status").innerText = "Starting chat..."; 
+        // Open the Genesys Messenger 
+        Genesys("command", "Messenger.open"); }); </script> </body> </html>
